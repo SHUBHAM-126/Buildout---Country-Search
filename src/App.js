@@ -1,23 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
 
 function App() {
+
+  const [countries, setCountries] = useState(null)
+
+  useEffect(() => {
+
+    const getCountries = async () => {
+      try {
+        const res = await fetch('https://restcountries.com/v3.1/all')
+        const data = await res.json()
+        setCountries(data)
+      }
+      catch (err) {
+        console.error(err)
+      }
+    }
+
+    getCountries()
+
+  }, [])
+
+  const contriesWrapper = {
+    display:"flex",
+    gap: "20px",
+    flexWrap : "wrap",
+    justifyContent:'center',
+    padding: "30px"
+  }
+
+  const countryStyle ={
+    textAlign : "center",
+    border:'1px solid #ccc',
+    padding: "10px",
+    borderRadius: '10px',
+    flex:1
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {countries && (
+        <div style={contriesWrapper}>
+          {countries.map(country => (
+            <div key={country.cca2} style={countryStyle}>
+              <img src={country.flags.png} alt={country.name.common} height={80} width={160}  />
+              <h5>{country.name.common}</h5>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
