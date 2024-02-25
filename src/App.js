@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 
 function App() {
 
-  const [countries, setCountries] = useState(null)
+  const [countries, setCountries] = useState([])
+  const [filtered, setFiltered] = useState([])
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
 
@@ -11,6 +13,7 @@ function App() {
         const res = await fetch('https://restcountries.com/v3.1/all')
         const data = await res.json()
         setCountries(data)
+        setFiltered(data)
       }
       catch (err) {
         console.error(err)
@@ -21,30 +24,36 @@ function App() {
 
   }, [])
 
-  const contriesWrapper = {
-    display:"flex",
-    gap: "20px",
-    flexWrap : "wrap",
-    justifyContent:'center',
-    padding: "30px"
-  }
+  useEffect(() => {
+    if (search != "" && countries) {
+      setFiltered(
+        countries.filter(country => {
+          const name = country.name.common
+          return name.toLowerCase().includes(search)
+        })
+      )
+    }
+    else if(countries){
+      setFiltered(countries)
+    }
+  }, [search])
 
-  const countryStyle ={
-    textAlign : "center",
-    border:'1px solid #ccc',
-    padding: "10px",
-    borderRadius: '10px',
-    flex:1
-  }
 
   return (
     <div>
-      <h1>New</h1>
+
+      <header>
+
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search for countries..." />
+
+      </header>
+
+
       {countries && (
-        <div style={contriesWrapper}>
-          {countries.map(country => (
-            <div key={country.cca2} style={countryStyle}>
-              <img src={country.flags.png} alt={country.name.common} height={80} width={160}  />
+        <div className="contriesWrapper">
+          {filtered.map(country => (
+            <div key={country.cca2} className="countryCard">
+              <img src={country.flags.png} alt={country.name.common} height={80} width={160} />
               <h5>{country.name.common}</h5>
             </div>
           ))}
