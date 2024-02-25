@@ -54,7 +54,7 @@ function App() {
           {filtered.map(country => (
             <div key={country.cca2} className="countryCard">
               <img src={country.flags.png} alt={country.name.common} height={80} width={160} />
-              <h5>{country.name.common}</h5>
+              <p>{country.name.common}</p>
             </div>
           ))}
         </div>
