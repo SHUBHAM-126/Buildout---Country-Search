@@ -39,6 +39,7 @@ function App() {
 
   return (
     <div>
+      <h1>New</h1>
       {countries && (
         <div style={contriesWrapper}>
           {countries.map(country => (
